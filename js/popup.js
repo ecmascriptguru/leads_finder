@@ -19,7 +19,7 @@ let Popup = (function() {
 		start = () => {
 			if (validate()) {
 				_btnStart.hide();
-				_btnStart.show();
+				_btnStop.show();
 				LeadsFinder.start(_status.location, _status.state);
 			} else {
 				alert("Please fill in the form.");
@@ -28,7 +28,7 @@ let Popup = (function() {
 
 		stop = () => {
 			_btnStart.show();
-			_btnStart.hide();
+			_btnStop.hide();
 			LeadsFinder.stop();
 		},
 
