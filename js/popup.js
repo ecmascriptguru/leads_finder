@@ -8,6 +8,9 @@ let Popup = (function() {
 		_btnStop = $("#stop"),
 		_panelStop = $("#stop-panel"),
 		_selectLocation = $("#location"),
+		_curCity = $("span#cur-city"),
+		_collectedLeadsCount = $("#collected-leads-count"),
+		_exportedFilesCount = $("#exported-files-count"),
 		_started = JSON.parse(localStorage._started || "false"),
 
 		validate = () => {
@@ -50,6 +53,18 @@ let Popup = (function() {
 			saveState();
 		},
 
+		updateProcessInfo = () => {
+			let curCity = JSON.parse(localStorage._curCity || "null"),
+				exportCount = JSON.parse(localStorage._exportedFilesCount || "0"),
+				leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count) + JSON.parse(localStorage._leads || "[]").length;
+			
+			if (curCity) {
+				_curCity.text(curCity);
+			}
+			_exportedFilesCount.text(exportCount);
+			_collectedLeadsCount.text(leadsCount);
+		},
+
 		init = () => {
 			_inputState.change(inputChangeHander);
 			_selectLocation.change(inputChangeHander);
@@ -62,6 +77,8 @@ let Popup = (function() {
 			if (_started) {
 				_panelStart.hide();
 				_panelStop.show();
+				updateProcessInfo();
+
 			} else {
 				_panelStart.show();
 				_panelStop.hide();
