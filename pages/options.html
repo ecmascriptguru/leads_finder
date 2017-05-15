@@ -19,7 +19,7 @@
 							<label for="select-leads-count" title="Max count of leads finding on emailfindr.net">Max Leads Count</label>
 						</div>
 						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
-							<select class="form-control" name="select-leads-count" id="select-leads-count">
+							<select class="form-control" name="select-leads-count" id="select-leads-count" data-target="_max_lead_count">
 								<option value="20">20</option>
 								<option value="50">50</option>
 								<option value="100">100</option>
@@ -33,7 +33,7 @@
 							<label for="input-records-count" title="Max count of records in exporting">Max Records Count</label>
 						</div>
 						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
-							<input type="number" class="form-control" id="input-records-count" value="1700" />
+							<input type="number" class="form-control" id="input-records-count" value="1700" data-target="_max_records_count" />
 						</div>
 					</div>
 					<div class="row form-group">
@@ -41,14 +41,14 @@
 							<label for="input-file-prefix" title="Prefix of exporting file name">Prefix of Exporting File Name</label>
 						</div>
 						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
-							<input type="text" class="form-control" id="input-file-prefix" value="<location>_<state>" />
+							<input type="text" class="form-control" id="input-file-prefix" value="<location>_<state>" data-target="_export_file_prefix"/>
 						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
 					<div class="row">
 						<div class="col-lg-4 col-lg-offset-8 col-md-5 col-md-offset-7 col-sm-6 col-sm-offset-6 col-xs-12">
-							<button id="save" disabled class="btn btn-primary form-control">Save Settings</button>
+							<button id="reset"class="btn btn-primary form-control">Reset Settings</button>
 						</div>
 					</div>
 				</div>
