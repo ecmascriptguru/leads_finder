@@ -162,7 +162,7 @@ let LeadsFinder = (function() {
         localStorage._cities = JSON.stringify([]);
         localStorage._leads = JSON.stringify([]);
 
-        alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + exportCount + " files.\nThank you.");
+        alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + (exportCount + 1) + " files.\nThank you.");
     };
 
     let init = () => {
