@@ -5,12 +5,18 @@ let Popup = (function() {
 		_inputState = $("#state"),
 		_btnStart = $("#start"),
 		_selectLocation = $("#location"),
+		_started = JSON.parse(localStorage._started || "false"),
 
 		start = () => {
-			//
+			LeadsFinder.start(_status.location, _status.state);
+		},
+
+		stop = () => {
+			LeadsFinder.stop();
 		},
 
 		saveState = () => {
+			localStorage._started = JSON.stringify(true);
 			localStorage._status = JSON.stringify(_status);
 		},
 
@@ -30,7 +36,8 @@ let Popup = (function() {
 			}
 			_btnStart.click(start);
 		}
-})
+})();
+
 (function(window, jQuery) {
     console.log("Starting popup");
 })(window, $);
