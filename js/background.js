@@ -30,7 +30,13 @@ let Background = (function() {
 						break;
 
 					case "emailfindr":
-						//
+						if (request.action === "status") {
+							if (JSON.parse(localStorage._step || "null") == "email" && JSON.parse(localStorage._emailFindrTabId || "null") == sender.tab.id) {
+								sendResponse({
+									city: JSON.parse(localStorage._curCity)
+								});
+							}
+						}
 						break;
 
 					default:

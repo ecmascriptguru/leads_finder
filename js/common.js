@@ -20,7 +20,16 @@ let LeadsFinder = (function() {
     };
 
     let findLeads = () => {
-        //
+        chrome.tabs.create({url: _emailFindrBaseUrl}, (tab) => {
+            localStorage._emailFindrTabId = JSON.stringify(tab.id);
+            localStorage._leads = JSON.stringify([]);
+
+            let cities = JSON.parse(localStorage._cities || "[]"),
+                curCity = cities.pop();
+
+            localStorage._cities = JSON.stringify(cities);
+            localStorage._curCity = JSON.stringify(curCity);
+        });
     };
 
     let saveCities = (cities) => {
