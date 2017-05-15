@@ -18,18 +18,18 @@ let Popup = (function() {
 
 		start = () => {
 			if (validate()) {
-				LeadsFinder.start(_status.location, _status.state);
 				_btnStart.hide();
 				_btnStart.show();
+				LeadsFinder.start(_status.location, _status.state);
 			} else {
 				alert("Please fill in the form.");
 			}
 		},
 
 		stop = () => {
-			LeadsFinder.stop();
 			_btnStart.show();
 			_btnStart.hide();
+			LeadsFinder.stop();
 		},
 
 		saveState = () => {

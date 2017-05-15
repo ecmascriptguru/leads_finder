@@ -2,8 +2,9 @@
 
 let Background = (function() {
 	let _status = JSON.parse(localStorage._status || "{}"),
-		_googleBaseUrl = "https://www.google.com/?gfe_rd=cr&ei=AAoZWbn8M7Hd8geBp6V4&gws_rd=ssl#q=",
-		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/",
+		_started = JSON.parse(localStorage._started || "false"),
+		_step = JSON.parse(localStorage._step || "null"),
+        _googleTabId = JSON.parse(localStorage._googleTabId || "null"),
 
 		init = () => {
 			chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -11,6 +12,7 @@ let Background = (function() {
 					case "popup":
 						if (request.action == "start") {
 							localStorage._started = JSON.stringify(true);
+							LeadsFinder.checkGoogle(request.location, request.state);
 						} else if (request.action === "stop") {
 							localStorage._started = JSON.stringify(false);
 						}
@@ -18,9 +20,12 @@ let Background = (function() {
 
 					case "google":
 						if (request.action === "status") {
-							sendResponse(_status);
+							sendResponse({started: JSON.parse(localStorage._started)});
 						} else if (request.action === "cities") {
-							console.log(request.cities);
+							if (JSON.parse(localStorage._step || "null") === "google" && JSON.parse(localStorage._googleTabId || "null") === sender.tab.id) {
+								console.log("Message arrived from tab with id = ", sender.tab.id);
+								LeadsFinder.saveCities(request.cities);
+							}
 						}
 						break;
 
