@@ -11,6 +11,7 @@ let Popup = (function() {
 		_curCity = $("span#cur-city"),
 		_collectedLeadsCount = $("#collected-leads-count"),
 		_exportedFilesCount = $("#exported-files-count"),
+		_restCitiesCount = $("#rest-cities-count"),
 		_started = JSON.parse(localStorage._started || "false"),
 
 		validate = () => {
@@ -55,7 +56,8 @@ let Popup = (function() {
 
 		updateProcessInfo = () => {
 			let curCity = JSON.parse(localStorage._curCity || "null"),
-				exportCount = JSON.parse(localStorage._exportedFilesCount || "0"),
+				exportCount = JSON.parse(localStorage._exportedCount || "0"),
+				citiesCount = JSON.parse(localStorage._cities || "[]").length,
 				leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count) + JSON.parse(localStorage._leads || "[]").length;
 			
 			if (curCity) {
@@ -63,6 +65,7 @@ let Popup = (function() {
 			}
 			_exportedFilesCount.text(exportCount);
 			_collectedLeadsCount.text(leadsCount);
+			_restCitiesCount.text(citiesCount);
 		},
 
 		init = () => {

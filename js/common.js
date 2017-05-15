@@ -97,7 +97,10 @@ let LeadsFinder = (function() {
         for (let i = 0; i < leads.length; i ++) {
             content.push(toLine([leads[i].name, leads[i].email]));
         }
-        downloadPlaintext(content.join("\n"), `${prefix}_${exportedCount}.csv`);
+        
+        if (content.length > 1) {
+            downloadPlaintext(content.join("\n"), `${prefix}_${exportedCount}.csv`);
+        }
     }
 
     let saveLeads = (leads) => {
