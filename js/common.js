@@ -25,6 +25,7 @@ let LeadsFinder = (function() {
 
     let start = (location, state) => {
         localStorage._started = JSON.stringify(true);
+        init();
         chrome.extension.sendMessage({
             from: "popup",
             action: "start",
@@ -58,9 +59,22 @@ let LeadsFinder = (function() {
         }
     }
 
+    let templateToFileName = () => {
+        let template = JSON.parse(localStorage._export_file_prefix || "null") || _defaultSettings._export_file_prefix.value;
+        let status = JSON.parse(localStorage._status || "{}");
+        let replacePattern = {
+            "<location>": status.location || "usa",
+            "<state>": status.state
+        }
 
+        for (let p in replacePattern) {
+            template = template.replace(new RegExp(p), replacePattern[p]);
+        }
 
-    let downloadPlaintext = function(data, filename) {
+        return template.replace(/\//g, "-");
+    }
+
+    let downloadPlaintext = (data, filename) => {
         let blob = new Blob([data], { type: "text/plain" })
 
         let el = document.createElement("a")
@@ -76,6 +90,7 @@ let LeadsFinder = (function() {
         let content = [toLine(["Name", "Email Address"])];
         let status = JSON.parse(localStorage._status || "{}")
         let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + status.state);
+        prefix = templateToFileName(prefix);
         let exportedCount = JSON.parse(localStorage._exportedCount || "0") + 1;
         localStorage._exportedCount = JSON.stringify(exportedCount);
 
@@ -140,7 +155,13 @@ let LeadsFinder = (function() {
     };
 
     let init = () => {
-        //
+        localStorage._step = JSON.stringify(null);
+        localStorage._leads = JSON.stringify([]);
+        localStorage._googleTabId = JSON.stringify(null);
+        localStorage._exportedCount = JSON.stringify(0);
+        localStorage._emailFindrTabId = JSON.stringify(null);
+        localStorage._curCity = JSON.stringify(null);
+        localStorage._cities = JSON.stringify([]);
     };
 
     return {

@@ -4,7 +4,9 @@ let Popup = (function() {
 	let _status = JSON.parse(localStorage._status || JSON.stringify({location: "usa"})),
 		_inputState = $("#state"),
 		_btnStart = $("#start"),
+		_panelStart = $("#start-panel"),
 		_btnStop = $("#stop"),
+		_panelStop = $("#stop-panel"),
 		_selectLocation = $("#location"),
 		_started = JSON.parse(localStorage._started || "false"),
 
@@ -18,8 +20,8 @@ let Popup = (function() {
 
 		start = () => {
 			if (validate()) {
-				_btnStart.hide();
-				_btnStop.show();
+				_panelStart.hide();
+				_panelStop.show();
 				LeadsFinder.start(_status.location, _status.state);
 			} else {
 				alert("Please fill in the form.");
@@ -27,8 +29,8 @@ let Popup = (function() {
 		},
 
 		stop = () => {
-			_btnStart.show();
-			_btnStop.hide();
+			_panelStart.show();
+			_panelStop.hide();
 			chrome.extension.sendMessage({
 				from: "popup",
 				action: "stop"
@@ -58,11 +60,11 @@ let Popup = (function() {
 			_btnStop.click(stop);
 
 			if (_started) {
-				_btnStart.hide();
-				_btnStop.show();
+				_panelStart.hide();
+				_panelStop.show();
 			} else {
-				_btnStart.show();
-				_btnStop.hide();
+				_panelStart.show();
+				_panelStop.hide();
 			}
 		};
 
