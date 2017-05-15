@@ -103,6 +103,10 @@ let LeadsFinder = (function() {
     }
 
     let stop = () => {
+        let curLeads = JSON.parse(localStorage._leads || "[]");
+		LeadsFinder.export(curLeads);
+        localStorage._leads = JSON.stringify([]);
+        
         if (JSON.parse(localStorage._googleTabId || "null")) {
             chrome.tabs.remove(JSON.parse(localStorage._googleTabId), () => {
                 localStorage._googleTabId = JSON.stringify(null);

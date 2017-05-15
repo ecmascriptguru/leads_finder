@@ -5,7 +5,7 @@
 	"short_name": "Leads Finder",
 	"description": "Leads Finder",
 	"author": "Alexis Richard",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	
 	"permissions": [
 		"*://www.google.com/*",

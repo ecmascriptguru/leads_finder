@@ -52,8 +52,6 @@ let Background = (function() {
 									count: JSON.parse(localStorage._max_lead_count || 20)
 								});
 							} else {
-								let curLeads = JSON.parse(localStorage._leads || "[]");
-								LeadsFinder.export(curLeads);
 								LeadsFinder.stop();
 							}
 						}
