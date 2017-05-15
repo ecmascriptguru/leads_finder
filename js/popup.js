@@ -9,7 +9,7 @@ let Popup = (function() {
 		_started = JSON.parse(localStorage._started || "false"),
 
 		validate = () => {
-			if (_status.location && _status.state) {
+			if (_status.location) {
 				return true;
 			} else {
 				return false;

@@ -86,14 +86,14 @@ let LeadsFinder = (function() {
 
     let checkGoogle = (location, state) => {
         let params = ["cities", "in"];
-        if (location) {
-            params.push(location);
-        }
-
+        
         if (state) {
             params.push(state);
         }
 
+        if (location) {
+            params.push(location);
+        }
         
         chrome.tabs.create({url: _googleBaseUrl + params.join("+")}, (tab) => {
             localStorage._step = JSON.stringify("google");
