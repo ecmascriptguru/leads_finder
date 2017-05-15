@@ -34,7 +34,7 @@ let Background = (function() {
 							if (JSON.parse(localStorage._step || "null") == "email" && JSON.parse(localStorage._emailFindrTabId || "null") == sender.tab.id) {
 								sendResponse({
 									city: JSON.parse(localStorage._curCity),
-									count: JSON.parse(localStorage._max_lead_count || 20)
+									count: JSON.parse(localStorage._max_lead_count || "null") || LeadsFinder.settings._max_lead_count.value
 								});
 							}
 						} else if (request.action == "leads") {
@@ -49,7 +49,7 @@ let Background = (function() {
 								sendResponse({
 									continue: true,
 									city: JSON.parse(localStorage._curCity),
-									count: JSON.parse(localStorage._max_lead_count || 20)
+									count: JSON.parse(localStorage._max_lead_count || "null") || LeadsFinder.settings._max_lead_count.value
 								});
 							} else {
 								LeadsFinder.stop();

@@ -5,6 +5,20 @@ let LeadsFinder = (function() {
         _started = JSON.parse(localStorage._started || "false"),
         _leads = JSON.parse(localStorage._leads || "[]"),
         _cities = JSON.parse(localStorage._cities || "[]"),
+        _defaultSettings = {
+            _max_lead_count: {
+                id: "select-leads-count",
+                value: 500
+            },
+            _max_records_count: {
+                id: "input-records-count",
+                value: 1700
+            },
+            _export_file_prefix: {
+                id: "input-file-prefix",
+                value: "<location>_<state>"
+            }
+        },
         _googleTabId = JSON.parse(localStorage._googleTabId || "null"),
         _googleBaseUrl = "https://www.google.com/?gfe_rd=cr&ei=AAoZWbn8M7Hd8geBp6V4&gws_rd=ssl#q=",
 		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/";
@@ -72,7 +86,7 @@ let LeadsFinder = (function() {
     }
 
     let saveLeads = (leads) => {
-        let recordsPerExport = JSON.parse(localStorage._records_per_export || "20");
+        let recordsPerExport = JSON.parse(localStorage._max_records_count || "null") || _defaultSettings._max_records_count.value;
         _leads = JSON.parse(localStorage._leads || "[]");
         _leads = _leads.concat(leads);
 
@@ -136,6 +150,7 @@ let LeadsFinder = (function() {
         checkGoogle: checkGoogle,
         saveCities: saveCities,
         saveLeads: saveLeads,
-        export: exportToCSV
+        export: exportToCSV,
+        settings: _defaultSettings
     };
 })();
