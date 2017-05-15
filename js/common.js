@@ -44,12 +44,35 @@ let LeadsFinder = (function() {
         }
     }
 
+
+
+    let downloadPlaintext = function(data, filename) {
+        let blob = new Blob([data], { type: "text/plain" })
+
+        let el = document.createElement("a")
+        el.href = URL.createObjectURL(blob)
+        el.download = filename
+        document.body.appendChild(el)
+        el.click()
+        document.body.removeChild(el)
+    }
+
     let exportToCSV = (leads) => {
-        console.log(leads);
+        let toLine = arr => arr.map(x => `"${(x + "").replace(/"/g, '""')}"`).join(",");
+        let content = [toLine(["Name", "Email Address"])];
+        let status = JSON.parse(localStorage._status || "{}")
+        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + status.state);
+        let exportedCount = JSON.parse(localStorage._exportedCount || "0") + 1;
+        localStorage._exportedCount = JSON.stringify(exportedCount);
+
+        for (let i = 0; i < leads.length; i ++) {
+            content.push(toLine([leads[i].name, leads[i].email]));
+        }
+        downloadPlaintext(content.join("\n"), `${prefix}_${exportedCount}.csv`);
     }
 
     let saveLeads = (leads) => {
-        let recordsPerExport = JSON.parse(localStorage._records_per_export || "50");
+        let recordsPerExport = JSON.parse(localStorage._records_per_export || "20");
         _leads = JSON.parse(localStorage._leads || "[]");
         _leads = _leads.concat(leads);
 

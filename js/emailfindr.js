@@ -12,6 +12,9 @@ let EmailFindr = (function() {
 		let $records = $("table#box tbody tr"),
 			leads = [];
 
+		if ($records.length == 0) {
+			return false;
+		}
 		for (let i = 1; i < $records.length; i ++) {
 			let $curRecord = $records.eq(i),
 				lead = {};
