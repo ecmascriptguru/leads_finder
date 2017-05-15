@@ -23,7 +23,7 @@ let LeadsFinder = (function() {
         _googleBaseUrl = "https://www.google.com/?gfe_rd=cr&ei=AAoZWbn8M7Hd8geBp6V4&gws_rd=ssl#q=",
 		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/";
 
-    let start = (location, state) => {
+    let start = (keyword, location, state) => {
         localStorage._started = JSON.stringify(true);
         init();
         chrome.extension.sendMessage({

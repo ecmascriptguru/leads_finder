@@ -33,6 +33,7 @@ let Background = (function() {
 						if (request.action === "status") {
 							if (JSON.parse(localStorage._step || "null") == "email" && JSON.parse(localStorage._emailFindrTabId || "null") == sender.tab.id) {
 								sendResponse({
+									keyword: JSON.parse(localStorage._status || "{}").keyword || "chiropractor",
 									city: JSON.parse(localStorage._curCity),
 									count: JSON.parse(localStorage._max_lead_count || "null") || LeadsFinder.settings._max_lead_count.value
 								});

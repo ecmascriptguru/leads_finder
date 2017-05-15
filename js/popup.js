@@ -1,8 +1,9 @@
 ﻿'use strict';
 
 let Popup = (function() {
-	let _status = JSON.parse(localStorage._status || JSON.stringify({location: "usa"})),
+	let _status = JSON.parse(localStorage._status || JSON.stringify({location: "usa", keyword: "chiropractor"})),
 		_inputState = $("#state"),
+		_inputKeyword = $("#keyword"),
 		_btnStart = $("#start"),
 		_panelStart = $("#start-panel"),
 		_btnStop = $("#stop"),
@@ -15,7 +16,7 @@ let Popup = (function() {
 		_started = JSON.parse(localStorage._started || "false"),
 
 		validate = () => {
-			if (_status.location) {
+			if (_status.keyword && _status.location) {
 				return true;
 			} else {
 				return false;
@@ -26,7 +27,8 @@ let Popup = (function() {
 			if (validate()) {
 				_panelStart.hide();
 				_panelStop.show();
-				LeadsFinder.start(_status.location, _status.state);
+				localStorage._status = JSON.stringify(_status);
+				LeadsFinder.start(_status.keyword, _status.location, _status.state);
 			} else {
 				alert("Please fill in the form.");
 			}
@@ -58,7 +60,7 @@ let Popup = (function() {
 			let curCity = JSON.parse(localStorage._curCity || "null"),
 				exportCount = JSON.parse(localStorage._exportedCount || "0"),
 				citiesCount = JSON.parse(localStorage._cities || "[]").length,
-				leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count) + JSON.parse(localStorage._leads || "[]").length;
+				leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count.value) + JSON.parse(localStorage._leads || "[]").length;
 			
 			if (curCity) {
 				_curCity.text(curCity);
@@ -71,6 +73,7 @@ let Popup = (function() {
 		init = () => {
 			_inputState.change(inputChangeHander);
 			_selectLocation.change(inputChangeHander);
+			_inputKeyword.change(inputChangeHander);
 			for (let p in _status) {
 				$("#" + p).val(_status[p]);
 			}
