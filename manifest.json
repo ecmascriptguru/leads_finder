@@ -11,6 +11,7 @@
 		"*://www.google.com/*",
 		"*://www.google.co.nz/*",
 		"*://www.google.com.au/*",
+		"*://www.google.ca/*",
 		"*://emailfindr.net/*",
 		"storage",
 		"tabs"
@@ -19,6 +20,7 @@
 	"background": {
 		"scripts": [
 			"js/jquery.js",
+			"js/common.js",
 			"js/background.js"
 		]
 	},
@@ -31,7 +33,8 @@
 			"matches": [
 				"*://www.google.com/*",
 				"*://www.google.co.nz/*",
-				"*://www.google.com.au/*"
+				"*://www.google.com.au/*",
+				"*://www.google.ca/*"
 			]
 		},
 		{
@@ -49,7 +52,7 @@
 			"19": "img/32.png",
 			"38": "img/32.png"
 		},
-		"default_title": "Citation Search",
+		"default_title": "Leads Generation",
 		"default_popup": "pages/popup.html"
 	},
 	"web_accessible_resources": [
