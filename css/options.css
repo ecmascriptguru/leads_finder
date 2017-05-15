@@ -1,13 +1,2 @@
-#data-table td {
-    vertical-align: middle;
-}
-#data-table td:first-child {
-    text-align: center;
-}
-#data-table td:nth-child(4) {
-    text-align: center;
-}
-#data-table td textarea {
-    width: 100%;
-    resize: none;
-}
+div#wrapper {
+    padding-top: 50px;}

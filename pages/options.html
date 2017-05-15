@@ -8,22 +8,54 @@
 	<link rel="stylesheet" type="text/css" href="/css/options.css">
 </head>
 <body>
-	<div class="container">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h2>Please check citations you copied.</h2>
-			</div>
-			<div class="panel-body">
-				<p>Something here</p>
-			</div>
-			<div class="panel-footer">
-				<div class="row">
-					<div class="col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-sm-4 col-sm-offset-8 col-xs-12">
-						<button id="export" class="btn btn-success form-control">Export</button>
+	<div class="container" id="wrapper">
+		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2>Leads Finding options</h2>
+				</div>
+				<div class="panel-body">
+					<div class="row form-group">
+						<div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
+							<label for="select-leads-count" title="Max count of leads finding on emailfindr.net">Max Leads Count</label>
+						</div>
+						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+							<select class="form-control" name="select-leads-count" id="select-leads-count">
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="250">250</option>
+								<option value="500">500</option>
+							</select>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
+							<label for="input-export-count" title="Max count of records in exporting">Max Records Count</label>
+						</div>
+						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+							<input type="number" class="form-control" id="input-export-count" value="1700" />
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
+							<label for="input-file-prefix" title="Prefix of exporting file name">Prefix of Exporting File Name</label>
+						</div>
+						<div class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+							<input type="text" class="form-control" id="input-file-prefix" value="<location>_<state>" />
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<div class="row">
+						<div class="col-lg-4 col-lg-offset-8 col-md-5 col-md-offset-7 col-sm-6 col-sm-offset-6 col-xs-12">
+							<button id="save" disabled class="btn btn-primary form-control">Save Settings</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+			
 	</div>
 	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
