@@ -68,7 +68,11 @@ let LeadsFinder = (function() {
         }
 
         for (let p in replacePattern) {
-            template = template.replace(new RegExp(p), replacePattern[p]);
+            if (replacePattern[p]) {
+                template = template.replace(new RegExp(p), replacePattern[p]);
+            } else {
+                template = template.replace(new RegExp(p), "none");
+            }
         }
 
         return template.replace(/\//g, "-");
@@ -136,6 +140,8 @@ let LeadsFinder = (function() {
 
     let stop = () => {
         let curLeads = JSON.parse(localStorage._leads || "[]");
+        let exportCount = JSON.parse(localStorage._exportedCount || "0"),
+            leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count.value) + JSON.parse(localStorage._leads || "[]").length;
 		LeadsFinder.export(curLeads);
         localStorage._leads = JSON.stringify([]);
         
@@ -155,6 +161,8 @@ let LeadsFinder = (function() {
         localStorage._curCity = JSON.stringify(null);
         localStorage._cities = JSON.stringify([]);
         localStorage._leads = JSON.stringify([]);
+
+        alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + exportCount + " files.\nThank you.");
     };
 
     let init = () => {
