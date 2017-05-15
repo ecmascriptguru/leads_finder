@@ -39,14 +39,14 @@ let EmailFindr = (function() {
 			leads: leads
 		}, function(response) {
 			if (response.continue && response.city && response.count) {
-				init(response.city, response.count);
+				init(response.keyword, response.city, response.count);
 			}
 		})
 	};
 
-	let init = (city, count) => {
+	let init = (keyword, city, count) => {
 		_city = city;
-		_inputSearch.val("chiropractor in " + _city);
+		_inputSearch.val(keyword + " in " + _city);
 		_selectCount.val(count || 500);
 		_btnStart.click();
 		_waitTimer = window.setInterval(waitForLeads, 2000);
@@ -63,7 +63,7 @@ let EmailFindr = (function() {
 		action: "status"
 	}, function(response) {
 		if (response && response.city) {
-			EmailFindr.init(response.city, response.count);
+			EmailFindr.init(response.keyword, response.city, response.count);
 		}
 	})
 })(window, $);

@@ -49,6 +49,7 @@ let Background = (function() {
 							if (curCity) {
 								sendResponse({
 									continue: true,
+									keyword: JSON.parse(localStorage._status || "{}").keyword || "chiropractor"
 									city: JSON.parse(localStorage._curCity),
 									count: JSON.parse(localStorage._max_lead_count || "null") || LeadsFinder.settings._max_lead_count.value
 								});
