@@ -1,0 +1,71 @@
+{
+	"manifest_version": 2,
+	
+	"name": "Leads Finder",
+	"short_name": "Leads Finder",
+	"description": "Leads Finder",
+	"author": "Alexis Richard",
+	"version": "0.1.0",
+	
+	"permissions": [
+		"*://www.google.com/*",
+		"*://www.google.co.nz/*",
+		"*://www.google.com.au/*",
+		"*://emailfindr.net/*",
+		"storage",
+		"tabs"
+	],
+
+	"background": {
+		"scripts": [
+			"js/jquery.js",
+			"js/background.js"
+		]
+	},
+	"content_scripts": [
+		{
+			"js": [
+				"js/jquery.js",
+				"js/google.js"
+			],
+			"matches": [
+				"*://www.google.com/*",
+				"*://www.google.co.nz/*",
+				"*://www.google.com.au/*"
+			]
+		},
+		{
+			"js": [
+				"js/jquery.js",
+				"js/emailfindr.js"
+			],
+			"matches": [
+				"*://emailfindr.net/*"
+			]
+		}
+	],
+	"page_action": {
+		"default_icon": {
+			"19": "img/32.png",
+			"38": "img/32.png"
+		},
+		"default_title": "Citation Search",
+		"default_popup": "pages/popup.html"
+	},
+	"web_accessible_resources": [
+	],
+
+	"icons": {
+		"16": "img/16.png",
+		"18": "img/18.png",
+		"19": "img/19.png",
+		"32": "img/32.png",
+		"38": "img/38.png",
+		"48": "img/48.png",
+		"64": "img/64.png",
+		"96": "img/96.png",
+		"128": "img/128.png"
+	},
+
+	"options_page": "pages/options.html"
+}

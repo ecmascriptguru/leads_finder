@@ -1,0 +1,12 @@
+.wrapper {
+    min-width: 352px;}
+    .wrapper table.list {
+        width: 100%;
+        padding: 0;}
+        .wrapper table.list tr.item {
+            list-style: none;}
+            .wrapper textarea {
+                resize: none;
+                height: 100px;
+                width: 400px;
+            }
