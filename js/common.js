@@ -44,6 +44,23 @@ let LeadsFinder = (function() {
         }
     }
 
+    let exportToCSV = (leads) => {
+        console.log(leads);
+    }
+
+    let saveLeads = (leads) => {
+        let recordsPerExport = JSON.parse(localStorage._records_per_export || "50");
+        _leads = JSON.parse(localStorage._leads || "[]");
+        _leads = _leads.concat(leads);
+
+        if (_leads.length > recordsPerExport) {
+            let exporting = _leads.slice(0, recordsPerExport);
+            _leads = _leads.slice(recordsPerExport);
+            exportToCSV(exporting);
+        }
+        localStorage._leads = JSON.stringify(_leads);
+    }
+
     let checkGoogle = (location, state) => {
         let params = ["cities", "in"];
         if (location) {
@@ -63,11 +80,22 @@ let LeadsFinder = (function() {
     }
 
     let stop = () => {
+        if (JSON.parse(localStorage._googleTabId || "null")) {
+            chrome.tabs.remove(JSON.parse(localStorage._googleTabId), () => {
+                localStorage._googleTabId = JSON.stringify(null);
+            });
+        }
+
+        if (JSON.parse(localStorage._emailFindrTabId || "null")) {
+            chrome.tabs.remove(JSON.parse(localStorage._emailFindrTabId), () => {
+                localStorage._emailFindrTabId = JSON.stringify(null);
+            });
+        }
         localStorage._started = JSON.stringify(false);
-        chrome.extension.sendMessage({
-            from: "popup",
-            action: "stop"
-        });
+        localStorage._step = JSON.stringify(null);
+        localStorage._curCity = JSON.stringify(null);
+        localStorage._cities = JSON.stringify([]);
+        localStorage._leads = JSON.stringify([]);
     };
 
     let init = () => {
@@ -79,6 +107,8 @@ let LeadsFinder = (function() {
         start: start,
         stop: stop,
         checkGoogle: checkGoogle,
-        saveCities: saveCities
+        saveCities: saveCities,
+        saveLeads: saveLeads,
+        export: exportToCSV
     };
 })();

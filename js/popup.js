@@ -29,7 +29,10 @@ let Popup = (function() {
 		stop = () => {
 			_btnStart.show();
 			_btnStop.hide();
-			LeadsFinder.stop();
+			chrome.extension.sendMessage({
+				from: "popup",
+				action: "stop"
+			});
 		},
 
 		saveState = () => {

@@ -14,7 +14,7 @@ let Background = (function() {
 							localStorage._started = JSON.stringify(true);
 							LeadsFinder.checkGoogle(request.location, request.state);
 						} else if (request.action === "stop") {
-							localStorage._started = JSON.stringify(false);
+							LeadsFinder.stop();
 						}
 						break;
 
@@ -33,8 +33,28 @@ let Background = (function() {
 						if (request.action === "status") {
 							if (JSON.parse(localStorage._step || "null") == "email" && JSON.parse(localStorage._emailFindrTabId || "null") == sender.tab.id) {
 								sendResponse({
-									city: JSON.parse(localStorage._curCity)
+									city: JSON.parse(localStorage._curCity),
+									count: JSON.parse(localStorage._max_lead_count || 20)
 								});
+							}
+						} else if (request.action == "leads") {
+							LeadsFinder.saveLeads(request.leads);
+							let cities = JSON.parse(localStorage._cities || "[]"),
+								curCity = cities.pop();
+
+							localStorage._cities = JSON.stringify(cities);
+							localStorage._curCity = JSON.stringify(curCity);
+
+							if (curCity) {
+								sendResponse({
+									continue: true,
+									city: JSON.parse(localStorage._curCity),
+									count: JSON.parse(localStorage._max_lead_count || 20)
+								});
+							} else {
+								let curLeads = JSON.parse(localStorage._leads || "[]");
+								LeadsFinder.export(curLeads);
+								LeadsFinder.stop();
 							}
 						}
 						break;
