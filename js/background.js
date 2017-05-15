@@ -9,7 +9,11 @@ let Background = (function() {
 			chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				switch(request.from) {
 					case "popup":
-						//
+						if (request.action == "start") {
+							localStorage._started = JSON.stringify(true);
+						} else if (request.action === "stop") {
+							localStorage._started = JSON.stringify(false);
+						}
 						break;
 
 					case "google":
