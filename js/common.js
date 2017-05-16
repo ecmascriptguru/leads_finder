@@ -20,7 +20,7 @@ let LeadsFinder = (function() {
             }
         },
         _googleTabId = JSON.parse(localStorage._googleTabId || "null"),
-        _googleBaseUrl = "https://www.google.com/?gfe_rd=cr&ei=AAoZWbn8M7Hd8geBp6V4&gws_rd=ssl#q=",
+        _googleBaseUrl = "https://www.google.co.nz/?gws_rd=ssl#q=",
 		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/";
 
     let start = (keyword, location, state) => {
@@ -47,23 +47,39 @@ let LeadsFinder = (function() {
         });
     };
 
+    let removeTab = (tabId, callback) => {
+        chrome.tabs.query({}, function(tabs) {
+            let tabIdArray = tabs.map((tab) => tab.id);
+            if (tabId && tabIdArray.indexOf(tabId) > -1) {
+                chrome.tabs.remove(tabId, () => {
+                    if (typeof callback === "function") {
+                        callback();
+                    }
+                });
+            } else {
+                if (typeof callback === "function") {
+                    callback();
+                }
+            }
+        })
+    }
+
     let saveCities = (cities) => {
         localStorage._cities = JSON.stringify(cities);
+        let googleTabId = JSON.parse(localStorage._googleTabId || "null");
         
-        if (JSON.parse(localStorage._googleTabId || "null")) {
-            chrome.tabs.remove(JSON.parse(localStorage._googleTabId), () => {
-                localStorage._googleTabId = JSON.stringify(null);
-                localStorage._step = JSON.stringify("email");
-                findLeads();
-            });
-        }
+        removeTab(googleTabId, () => {
+            localStorage._googleTabId = JSON.stringify(null);
+            localStorage._step = JSON.stringify("email");
+            findLeads();
+        });
     }
 
     let templateToFileName = () => {
         let template = JSON.parse(localStorage._export_file_prefix || "null") || _defaultSettings._export_file_prefix.value;
         let status = JSON.parse(localStorage._status || "{}");
         let replacePattern = {
-            "<location>": status.location || "usa",
+            "<location>": status.location || "United States of America",
             "<state>": status.state
         }
 
@@ -145,17 +161,14 @@ let LeadsFinder = (function() {
 		LeadsFinder.export(curLeads);
         localStorage._leads = JSON.stringify([]);
         
-        if (JSON.parse(localStorage._googleTabId || "null")) {
-            chrome.tabs.remove(JSON.parse(localStorage._googleTabId), () => {
-                localStorage._googleTabId = JSON.stringify(null);
-            });
-        }
+        removeTab(JSON.parse(localStorage._googleTabId || "null"), () => {
+            localStorage._googleTabId = JSON.stringify(null);
+        });
 
-        if (JSON.parse(localStorage._emailFindrTabId || "null")) {
-            chrome.tabs.remove(JSON.parse(localStorage._emailFindrTabId), () => {
-                localStorage._emailFindrTabId = JSON.stringify(null);
-            });
-        }
+        removeTab(JSON.parse(localStorage._emailFindrTabId || "null"), () => {
+            localStorage._emailFindrTabId = JSON.stringify(null);
+        });
+        
         localStorage._started = JSON.stringify(false);
         localStorage._step = JSON.stringify(null);
         localStorage._curCity = JSON.stringify(null);

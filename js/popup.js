@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 let Popup = (function() {
-	let _status = JSON.parse(localStorage._status || JSON.stringify({location: "usa", keyword: "chiropractor"})),
+	let _status = JSON.parse(localStorage._status || JSON.stringify({location: "United States of America", keyword: "chiropractor"})),
 		_inputState = $("#state"),
 		_inputKeyword = $("#keyword"),
 		_btnStart = $("#start"),
