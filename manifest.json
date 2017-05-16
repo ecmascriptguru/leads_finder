@@ -5,14 +5,14 @@
 	"short_name": "Leads Finder",
 	"description": "Leads Finder",
 	"author": "Alexis Richard",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	
 	"permissions": [
-		"*://www.google.com/*",
-		"*://www.google.co.nz/*",
-		"*://www.google.com.au/*",
-		"*://www.google.ca/*",
-		"*://emailfindr.net/*",
+		"https://www.google.com/*",
+		"https://www.google.co.nz/*",
+		"https://www.google.com.au/*",
+		"https://www.google.ca/*",
+		"https://emailfindr.net/*",
 		"storage",
 		"tabs"
 	],
@@ -31,11 +31,12 @@
 				"js/google.js"
 			],
 			"matches": [
-				"*://www.google.com/*",
-				"*://www.google.co.nz/*",
-				"*://www.google.com.au/*",
-				"*://www.google.ca/*"
-			]
+				"https://www.google.com/*",
+				"https://www.google.co.nz/*",
+				"https://www.google.com.au/*",
+				"https://www.google.ca/*"
+			],
+			"run_at":    "document_end"
 		},
 		{
 			"js": [
