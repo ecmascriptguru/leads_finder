@@ -34,6 +34,19 @@ let LeadsFinder = (function() {
         });
     };
 
+    let resume = () => {
+        let status = JSON.parse(localStorage._status || "{}");
+        let step = JSON.parse(localStorage._step || "null");
+
+        localStorage._started = JSON.stringify(true);
+
+        if (step == "google") {
+            checkGoogle(status.location, status.state);
+        } else if (step == "email") {
+            findLeads();
+        }
+    };
+
     let findLeads = () => {
         chrome.tabs.create({url: _emailFindrBaseUrl}, (tab) => {
             localStorage._emailFindrTabId = JSON.stringify(tab.id);
@@ -178,6 +191,18 @@ let LeadsFinder = (function() {
         alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + (exportCount + 1) + " files.\nThank you.");
     };
 
+    let pause = () => {
+        removeTab(JSON.parse(localStorage._googleTabId || "null"), () => {
+            localStorage._googleTabId = JSON.stringify(null);
+        });
+
+        removeTab(JSON.parse(localStorage._emailFindrTabId || "null"), () => {
+            localStorage._emailFindrTabId = JSON.stringify(null);
+        });
+        
+        localStorage._started = JSON.stringify(false);
+    };
+
     let init = () => {
         localStorage._step = JSON.stringify(null);
         localStorage._leads = JSON.stringify([]);
@@ -191,7 +216,9 @@ let LeadsFinder = (function() {
     return {
         init: init,
         start: start,
+        resume: resume,
         stop: stop,
+        pause: pause,
         checkGoogle: checkGoogle,
         saveCities: saveCities,
         saveLeads: saveLeads,

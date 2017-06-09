@@ -5,8 +5,10 @@ let Popup = (function() {
 		_inputState = $("#state"),
 		_inputKeyword = $("#keyword"),
 		_btnStart = $("#start"),
+		_btnContinue = $("#continue"),
 		_panelStart = $("#start-panel"),
 		_btnStop = $("#stop"),
+		_btnPause = $("#pause"),
 		_panelStop = $("#stop-panel"),
 		_selectLocation = $("#location"),
 		_curCity = $("span#cur-city"),
@@ -34,12 +36,30 @@ let Popup = (function() {
 			}
 		},
 
+		resume = () => {
+			_panelStart.show();
+			_panelStop.hide();
+			chrome.extension.sendMessage({
+				from: "popup",
+				action: "resume"
+			});
+		},
+
 		stop = () => {
 			_panelStart.show();
 			_panelStop.hide();
 			chrome.extension.sendMessage({
 				from: "popup",
 				action: "stop"
+			});
+		},
+
+		pause = () => {
+			_panelStart.show();
+			_panelStop.hide();
+			chrome.extension.sendMessage({
+				from: "popup",
+				action: "pause"
 			});
 		},
 
@@ -78,7 +98,11 @@ let Popup = (function() {
 				$("#" + p).val(_status[p]);
 			}
 			_btnStart.click(start);
+			_btnContinue.click(resume);
 			_btnStop.click(stop);
+			_btnPause.click(pause);
+
+			// if (JSON.parse(localStorage.))
 
 			if (_started) {
 				_panelStart.hide();

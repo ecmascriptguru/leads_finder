@@ -15,6 +15,10 @@ let Background = (function() {
 							LeadsFinder.checkGoogle(request.location, request.state);
 						} else if (request.action === "stop") {
 							LeadsFinder.stop();
+						} else if (request.action == "resume") {
+							LeadsFinder.resume();
+						} else if (request.action == "pause") {
+							LeadsFinder.pause();
 						}
 						break;
 
