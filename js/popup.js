@@ -5,6 +5,8 @@ let Popup = (function() {
 		_inputState = $("#state"),
 		_inputKeyword = $("#keyword"),
 		_btnStart = $("#start"),
+		_btnBatchStart = $("#btn-batch-start"),
+		_fileCsvFile = $("#csv-file"),
 		_btnContinue = $("#continue"),
 		_panelStart = $("#start-panel"),
 		_btnStop = $("#stop"),
@@ -15,17 +17,17 @@ let Popup = (function() {
 		_collectedLeadsCount = $("#collected-leads-count"),
 		_exportedFilesCount = $("#exported-files-count"),
 		_restCitiesCount = $("#rest-cities-count"),
-		_started = JSON.parse(localStorage._started || "false"),
+		_started = JSON.parse(localStorage._started || "false");
 
-		validate = () => {
+	const validate = () => {
 			if (_status.keyword && _status.location) {
 				return true;
 			} else {
 				return false;
 			}
-		},
+		};
 
-		start = () => {
+	const start = () => {
 			if (validate()) {
 				_panelStart.hide();
 				_panelStop.show();
@@ -34,49 +36,49 @@ let Popup = (function() {
 			} else {
 				alert("Please fill in the form.");
 			}
-		},
+		};
 
-		resume = () => {
+	const resume = () => {
 			_panelStart.show();
 			_panelStop.hide();
 			chrome.extension.sendMessage({
 				from: "popup",
 				action: "resume"
 			});
-		},
+		};
 
-		stop = () => {
+	const stop = () => {
 			_panelStart.show();
 			_panelStop.hide();
 			chrome.extension.sendMessage({
 				from: "popup",
 				action: "stop"
 			});
-		},
+		};
 
-		pause = () => {
+	const pause = () => {
 			_panelStart.show();
 			_panelStop.hide();
 			chrome.extension.sendMessage({
 				from: "popup",
 				action: "pause"
 			});
-		},
+		};
 
-		saveState = () => {
+	const saveState = () => {
 			localStorage._started = JSON.stringify(true);
 			localStorage._status = JSON.stringify(_status);
-		},
+		};
 
-		inputChangeHander = () => {
+	const inputChangeHander = () => {
 			let name = event.target.getAttribute("name"),
 				value = event.target.value;
 
 			_status[name] = value;
 			saveState();
-		},
+		};
 
-		updateProcessInfo = () => {
+	const updateProcessInfo = () => {
 			let curCity = JSON.parse(localStorage._curCity || "null"),
 				exportCount = JSON.parse(localStorage._exportedCount || "0"),
 				citiesCount = JSON.parse(localStorage._cities || "[]").length,
@@ -88,9 +90,41 @@ let Popup = (function() {
 			_exportedFilesCount.text(exportCount);
 			_collectedLeadsCount.text(leadsCount);
 			_restCitiesCount.text(citiesCount);
-		},
+		};
 
-		init = () => {
+	const fileCsvChangeHandler = (file) => {
+			let reader = new FileReader;
+			reader.readAsText(file);
+			// Handle errors load
+			reader.onload = (event) => {
+				let csv = event.target.result;
+				let lines = csv.split("\n");
+				let params = [];
+
+				for (let i = 1; i < lines.length; i ++) {
+					let cols = lines[i].split(",");
+
+					if (cols.length == 3) {
+						params.push({
+							location: cols[0].trim(),
+							state: cols[1].trim(),
+							keyword: cols[2].trim()
+						});
+					} else {
+						continue;
+					}
+				}
+
+				LeadsFinder.addBatch(params);
+			};
+			reader.onerror = (event) => {
+				if(event.target.error.name == "NotReadableError") {
+					alert("Canno't read file !");
+				}
+			};
+		}
+
+	const init = () => {
 			_inputState.change(inputChangeHander);
 			_selectLocation.change(inputChangeHander);
 			_inputKeyword.change(inputChangeHander);
@@ -101,6 +135,13 @@ let Popup = (function() {
 			_btnContinue.click(resume);
 			_btnStop.click(stop);
 			_btnPause.click(pause);
+			_fileCsvFile.change((event) => {
+				fileCsvChangeHandler(event.target.files[0]);
+			});
+
+			_btnBatchStart.click(() => {
+
+			})
 
 			// if (JSON.parse(localStorage.))
 

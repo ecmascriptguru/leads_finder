@@ -4,9 +4,13 @@ let Options = (function() {
 	let _selectLeadsCount = $("#select-leads-count"),
 		_inputRecordsCount = $("#input-records-count"),
 		_inputFilePrefix = $("#input-file-prefix"),
+		_selectLocation = $("#location"),
+		_inputState = $("#state"),
+		_inputKeyword = $("#keyword"),
+		_btnAddParam = $("#add-new-param"),
 		_btnReset = $("#reset");
 
-	let initializeComponents = () => {
+	const initializeComponents = () => {
 		let settings = LeadsFinder.settings;
 
 		for (let p in settings) {
@@ -15,7 +19,7 @@ let Options = (function() {
 		}
 	};
 
-	let resetConfig = () => {
+	const resetConfig = () => {
 		let settings = LeadsFinder.settings;
 
 		for (let p in settings) {
@@ -25,16 +29,60 @@ let Options = (function() {
 		}
 	}
 
-	let inputChangeHandler = () => {
+	const inputChangeHandler = () => {
 		let target = event.target.getAttribute("data-target");
 		localStorage[target] = JSON.stringify(event.target.value);
 	}
 
-	let init = () => {
+	const drawTable = () => {
+		let params = LeadsFinder.getBatchParams();
+		let $tBody = $("#batch-params-table tbody");
+
+		$tBody.children().remove();
+
+		for (let i = 0; i < params.length; i ++) {
+			$tBody.append(
+				$("<tr/>").append(
+					$("<td/>").text(i + 1),
+					$("<td/>").text(params[i].location),
+					$("<td/>").text(params[i].state),
+					$("<td/>").text(params[i].keyword),
+					$("<td/>").append(
+						$("<button/>").addClass("btn btn-danger param-delete").attr({"data-index": i}).text("Delete")
+					)
+				)
+			);
+		}
+	}
+
+	const addBatchButtonHandler = () => {
+		let location = _selectLocation.val();
+		let state = _inputState.val().trim();
+		let keyword = _inputKeyword.val().trim();
+		if (location == "" || state == "" || keyword == "") {
+			alert("Please fill in the form.");
+		} else {
+			LeadsFinder.addBatch([{location, state, keyword}]);
+			drawTable();
+		}
+	}
+
+	const init = () => {
 		initializeComponents();
 		$("input").change(inputChangeHandler);
 		$("select").change(inputChangeHandler);
+
+		//	Tabbed pane
+		$(".nav-tabs li a").click((event) => {
+			event.preventDefault();
+			$(event.target).tab('show');
+		});
+
+		_btnAddParam.click((event) => {
+			addBatchButtonHandler();
+		})
 		_btnReset.click(resetConfig);
+		drawTable();
 	}
 
 	return {

@@ -23,7 +23,7 @@ let LeadsFinder = (function() {
         _googleBaseUrl = "https://www.google.co.nz/?gws_rd=ssl#q=",
 		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/";
 
-    let start = (keyword, location, state) => {
+    const start = (keyword, location, state) => {
         localStorage._started = JSON.stringify(true);
         init();
         chrome.extension.sendMessage({
@@ -34,7 +34,7 @@ let LeadsFinder = (function() {
         });
     };
 
-    let resume = () => {
+    const resume = () => {
         let status = JSON.parse(localStorage._status || "{}");
         let step = JSON.parse(localStorage._step || "null");
 
@@ -47,7 +47,7 @@ let LeadsFinder = (function() {
         }
     };
 
-    let findLeads = () => {
+    const findLeads = () => {
         chrome.tabs.create({url: _emailFindrBaseUrl}, (tab) => {
             localStorage._emailFindrTabId = JSON.stringify(tab.id);
             localStorage._leads = JSON.stringify([]);
@@ -60,7 +60,7 @@ let LeadsFinder = (function() {
         });
     };
 
-    let removeTab = (tabId, callback) => {
+    const removeTab = (tabId, callback) => {
         chrome.tabs.query({}, function(tabs) {
             let tabIdArray = tabs.map((tab) => tab.id);
             if (tabId && tabIdArray.indexOf(tabId) > -1) {
@@ -77,7 +77,11 @@ let LeadsFinder = (function() {
         })
     }
 
-    let saveCities = (cities) => {
+    const getBatchParams = () => {
+        return JSON.parse(localStorage._params || "[]");
+    }
+
+    const saveCities = (cities) => {
         localStorage._cities = JSON.stringify(cities);
         let googleTabId = JSON.parse(localStorage._googleTabId || "null");
         
@@ -88,7 +92,7 @@ let LeadsFinder = (function() {
         });
     }
 
-    let templateToFileName = () => {
+    const templateToFileName = () => {
         let template = JSON.parse(localStorage._export_file_prefix || "null") || _defaultSettings._export_file_prefix.value;
         let status = JSON.parse(localStorage._status || "{}");
         let replacePattern = {
@@ -107,7 +111,7 @@ let LeadsFinder = (function() {
         return template.replace(/\//g, "-");
     }
 
-    let downloadPlaintext = (data, filename) => {
+    const downloadPlaintext = (data, filename) => {
         let blob = new Blob([data], { type: "text/plain" })
 
         let el = document.createElement("a")
@@ -118,7 +122,7 @@ let LeadsFinder = (function() {
         document.body.removeChild(el)
     }
 
-    let exportToCSV = (leads) => {
+    const exportToCSV = (leads) => {
         let toLine = arr => arr.map(x => `"${(x + "").replace(/"/g, '""')}"`).join(",");
         let content = [toLine(["Name", "Email Address"])];
         let status = JSON.parse(localStorage._status || "{}")
@@ -136,7 +140,7 @@ let LeadsFinder = (function() {
         }
     }
 
-    let saveLeads = (leads) => {
+    const saveLeads = (leads) => {
         let recordsPerExport = JSON.parse(localStorage._max_records_count || "null") || _defaultSettings._max_records_count.value;
         _leads = JSON.parse(localStorage._leads || "[]");
         _leads = _leads.concat(leads);
@@ -149,7 +153,7 @@ let LeadsFinder = (function() {
         localStorage._leads = JSON.stringify(_leads);
     }
 
-    let checkGoogle = (location, state) => {
+    const checkGoogle = (location, state) => {
         let params = ["cities", "in"];
         
         if (state) {
@@ -167,7 +171,7 @@ let LeadsFinder = (function() {
         });
     }
 
-    let stop = () => {
+    const stop = () => {
         let curLeads = JSON.parse(localStorage._leads || "[]");
         let exportCount = JSON.parse(localStorage._exportedCount || "0"),
             leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count.value) + JSON.parse(localStorage._leads || "[]").length;
@@ -191,7 +195,7 @@ let LeadsFinder = (function() {
         alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + (exportCount + 1) + " files.\nThank you.");
     };
 
-    let pause = () => {
+    const pause = () => {
         removeTab(JSON.parse(localStorage._googleTabId || "null"), () => {
             localStorage._googleTabId = JSON.stringify(null);
         });
@@ -203,7 +207,13 @@ let LeadsFinder = (function() {
         localStorage._started = JSON.stringify(false);
     };
 
-    let init = () => {
+    const addBatchRecords = (params) => {
+        let original = JSON.parse(localStorage._params || "[]");
+        original = original.concat(params);
+        localStorage._params = JSON.stringify(original);
+    }
+
+    const init = () => {
         localStorage._step = JSON.stringify(null);
         localStorage._leads = JSON.stringify([]);
         localStorage._googleTabId = JSON.stringify(null);
@@ -223,6 +233,8 @@ let LeadsFinder = (function() {
         saveCities: saveCities,
         saveLeads: saveLeads,
         export: exportToCSV,
-        settings: _defaultSettings
+        settings: _defaultSettings,
+        addBatch: addBatchRecords,
+        getBatchParams: getBatchParams
     };
 })();
