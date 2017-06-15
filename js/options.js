@@ -65,6 +65,8 @@ let Options = (function() {
 			alert("Please fill in the form.");
 		} else {
 			LeadsFinder.addBatch([{location, state, keyword}]);
+			_inputState.val("");
+			// _keyword.val("");
 			drawTable();
 		}
 	}

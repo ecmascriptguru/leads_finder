@@ -26,11 +26,11 @@ let LeadsFinder = (function() {
     const start = (keyword, location, state, mode) => {
         localStorage._mode = JSON.stringify(mode || "individual");
         localStorage._started = JSON.stringify(true);
-        localStorage.status = JSON.stringify({
+        localStorage._status = JSON.stringify({
             location,
             state,
             keyword
-        })
+        });
         init();
         // chrome.extension.sendMessage({
         //     from: "popup",
@@ -38,7 +38,7 @@ let LeadsFinder = (function() {
         //     location: location,
         //     state: state
         // });
-        LeadsFinder.checkGoogle(location, state);
+        checkGoogle(location, state);
     };
 
     const resume = () => {
@@ -133,9 +133,9 @@ let LeadsFinder = (function() {
         let toLine = arr => arr.map(x => `"${(x + "").replace(/"/g, '""')}"`).join(",");
         let content = [toLine(["Name", "Email Address"])];
         let status = JSON.parse(localStorage._status || "{}")
-        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + status.state || "");
+        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + (status.state || ""));
         prefix = templateToFileName(prefix);
-        let exportedCount = JSON.parse(localStorage._exportedCount || "0") + 1;
+        let exportedCount = parseInt(JSON.parse(localStorage._exportedCount || "0")) + 1;
         localStorage._exportedCount = JSON.stringify(exportedCount);
 
         for (let i = 0; i < leads.length; i ++) {
@@ -191,7 +191,7 @@ let LeadsFinder = (function() {
         let curLeads = JSON.parse(localStorage._leads || "[]");
         let exportCount = JSON.parse(localStorage._exportedCount || "0"),
             leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count.value) + JSON.parse(localStorage._leads || "[]").length;
-		LeadsFinder.export(curLeads);
+		exportToCSV(curLeads);
         
         removeTab(JSON.parse(localStorage._googleTabId || "null"), () => {
             localStorage._googleTabId = JSON.stringify(null);
