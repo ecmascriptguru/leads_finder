@@ -14,7 +14,7 @@ let Background = (function() {
 							localStorage._started = JSON.stringify(true);
 							LeadsFinder.checkGoogle(request.location, request.state);
 						} else if (request.action === "stop") {
-							LeadsFinder.stop();
+							LeadsFinder.stop(true);
 						} else if (request.action == "resume") {
 							LeadsFinder.resume();
 						} else if (request.action == "pause") {

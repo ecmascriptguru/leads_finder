@@ -23,15 +23,22 @@ let LeadsFinder = (function() {
         _googleBaseUrl = "https://www.google.co.nz/?gws_rd=ssl#q=",
 		_emailFindrBaseUrl = "https://emailfindr.net/apps/fb_extractor/";
 
-    const start = (keyword, location, state) => {
+    const start = (keyword, location, state, mode) => {
+        localStorage._mode = JSON.stringify(mode || "individual");
         localStorage._started = JSON.stringify(true);
+        localStorage.status = JSON.stringify({
+            location,
+            state,
+            keyword
+        })
         init();
-        chrome.extension.sendMessage({
-            from: "popup",
-            action: "start",
-            location: location,
-            state: state
-        });
+        // chrome.extension.sendMessage({
+        //     from: "popup",
+        //     action: "start",
+        //     location: location,
+        //     state: state
+        // });
+        LeadsFinder.checkGoogle(location, state);
     };
 
     const resume = () => {
@@ -126,7 +133,7 @@ let LeadsFinder = (function() {
         let toLine = arr => arr.map(x => `"${(x + "").replace(/"/g, '""')}"`).join(",");
         let content = [toLine(["Name", "Email Address"])];
         let status = JSON.parse(localStorage._status || "{}")
-        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + status.state);
+        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + status.state || "");
         prefix = templateToFileName(prefix);
         let exportedCount = JSON.parse(localStorage._exportedCount || "0") + 1;
         localStorage._exportedCount = JSON.stringify(exportedCount);
@@ -171,12 +178,20 @@ let LeadsFinder = (function() {
         });
     }
 
-    const stop = () => {
+    const removeParamByIndex = (index) => {
+        let params = JSON.parse(localStorage._params);
+        let res = params.splice(index + 1);
+        params.splice(index);
+        params = params.concat(res);
+        localStorage._params = JSON.stringify(params);
+        return params;
+    }
+
+    const stop = (force) => {
         let curLeads = JSON.parse(localStorage._leads || "[]");
         let exportCount = JSON.parse(localStorage._exportedCount || "0"),
             leadsCount = exportCount * (JSON.parse(localStorage._max_records_count || "null") || LeadsFinder.settings._max_records_count.value) + JSON.parse(localStorage._leads || "[]").length;
 		LeadsFinder.export(curLeads);
-        localStorage._leads = JSON.stringify([]);
         
         removeTab(JSON.parse(localStorage._googleTabId || "null"), () => {
             localStorage._googleTabId = JSON.stringify(null);
@@ -186,13 +201,26 @@ let LeadsFinder = (function() {
             localStorage._emailFindrTabId = JSON.stringify(null);
         });
         
-        localStorage._started = JSON.stringify(false);
         localStorage._step = JSON.stringify(null);
         localStorage._curCity = JSON.stringify(null);
         localStorage._cities = JSON.stringify([]);
         localStorage._leads = JSON.stringify([]);
 
-        alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + (exportCount + 1) + " files.\nThank you.");
+        if (JSON.parse(localStorage._mode || "individual") == "batch") {
+            let params = JSON.parse(localStorage._params || "[]");
+
+            if (params.length == 0 || force) {
+                localStorage._started = JSON.stringify(false);
+                alert("Batch process completed.");
+            } else {
+                let param = params.pop();
+                localStorage._params = JSON.stringify(params);
+                start(param.keyword, param.location, param.state, JSON.parse(localStorage._mode));
+            }
+        } else {
+            localStorage._started = JSON.stringify(false);
+            alert("Leads Finding Extension Popup!\nSuccessfully Complted. " + leadsCount + " of leads are exported to " + (exportCount + 1) + " files.\nThank you.");
+        }
     };
 
     const pause = () => {
@@ -235,6 +263,7 @@ let LeadsFinder = (function() {
         export: exportToCSV,
         settings: _defaultSettings,
         addBatch: addBatchRecords,
-        getBatchParams: getBatchParams
+        getBatchParams: getBatchParams,
+        removePatchParam: removeParamByIndex
     };
 })();

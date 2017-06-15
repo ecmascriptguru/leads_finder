@@ -27,14 +27,26 @@ let Popup = (function() {
 			}
 		};
 
-	const start = () => {
-			if (validate()) {
-				_panelStart.hide();
-				_panelStop.show();
-				localStorage._status = JSON.stringify(_status);
-				LeadsFinder.start(_status.keyword, _status.location, _status.state);
-			} else {
-				alert("Please fill in the form.");
+	const start = (mode) => {
+			if (mode == "individual") {
+				if (validate()) {
+					_panelStart.hide();
+					_panelStop.show();
+					localStorage._status = JSON.stringify(_status);
+					LeadsFinder.start(_status.keyword, _status.location, _status.state, mode);
+				} else {
+					alert("Please fill in the form.");
+				}
+			} else if (mode == "batch") {
+				let params = JSON.parse(localStorage._params);
+
+				if (params.length > 0) {
+					let param = params.pop();
+					localStorage._params = JSON.stringify(params);
+					LeadsFinder.start(param.keyword, param.location, param.state, mode);
+				} else {
+					alert("There is nothing to do batch research.");
+				}
 			}
 		};
 
@@ -92,6 +104,10 @@ let Popup = (function() {
 			_restCitiesCount.text(citiesCount);
 		};
 
+	const batchStart = () => {
+			start("batch");
+		};
+
 	const fileCsvChangeHandler = (file) => {
 			let reader = new FileReader;
 			reader.readAsText(file);
@@ -131,7 +147,9 @@ let Popup = (function() {
 			for (let p in _status) {
 				$("#" + p).val(_status[p]);
 			}
-			_btnStart.click(start);
+			_btnStart.click(() => {
+				start("individual");
+			});
 			_btnContinue.click(resume);
 			_btnStop.click(stop);
 			_btnPause.click(pause);
@@ -140,8 +158,8 @@ let Popup = (function() {
 			});
 
 			_btnBatchStart.click(() => {
-
-			})
+				start("batch");
+			});
 
 			// if (JSON.parse(localStorage.))
 

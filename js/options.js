@@ -34,8 +34,10 @@ let Options = (function() {
 		localStorage[target] = JSON.stringify(event.target.value);
 	}
 
-	const drawTable = () => {
-		let params = LeadsFinder.getBatchParams();
+	const drawTable = (params) => {
+		if (!params || typeof params != "object") {
+			params = LeadsFinder.getBatchParams();
+		}
 		let $tBody = $("#batch-params-table tbody");
 
 		$tBody.children().remove();
@@ -59,7 +61,7 @@ let Options = (function() {
 		let location = _selectLocation.val();
 		let state = _inputState.val().trim();
 		let keyword = _inputKeyword.val().trim();
-		if (location == "" || state == "" || keyword == "") {
+		if (location == "" || keyword == "") {
 			alert("Please fill in the form.");
 		} else {
 			LeadsFinder.addBatch([{location, state, keyword}]);
@@ -83,10 +85,24 @@ let Options = (function() {
 		})
 		_btnReset.click(resetConfig);
 		drawTable();
+
+		$(document).on("click", "#batch-params-table tr button.param-delete", (event) => {
+			let index = event.target.getAttribute("data-index");
+			let params = LeadsFinder.removePatchParam(index);
+			drawTable(params);
+		})
+	}
+
+	const cutCities = (index) => {
+		let cities = JSON.parse(localStorage._cities || "[]");
+		cities.splice(index);
+		localStorage._cities = JSON.stringify(cities);
+		return cities;
 	}
 
 	return {
-		init: init
+		init: init,
+		cut: cutCities
 	}
 })();
 
