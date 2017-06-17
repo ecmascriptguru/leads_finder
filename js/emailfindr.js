@@ -46,11 +46,27 @@ let EmailFindr = (function() {
 
 	let init = (keyword, city, count) => {
 		_city = city;
-		_inputSearch.val(keyword + " in " + _city);
-		_selectCount.val(count || 500);
-		_btnStart.click();
-		_waitTimer = window.setInterval(waitForLeads, 2000);
-		console.log("Initializing...");
+
+		_inputSearch = $("#search");
+		_btnStart = $("#submit");
+		_selectCount = $("#cd-dropdown");
+
+		if (_btnStart.length > 0) {
+			clearInterval(_waitTimer);
+			
+			_inputSearch.val(keyword + " in " + _city);
+			_selectCount.val(count || 500);
+			_btnStart.click();
+			_waitTimer = window.setInterval(waitForLeads, 2000);
+			console.log("Initializing...");
+		} else {
+			if (!_waitTimer) {
+				_waitTimer = window.setInterval(() => {
+					init(keyword, city, count);
+				}, 500);
+			}
+		}
+			
 	};
 
 	return {
