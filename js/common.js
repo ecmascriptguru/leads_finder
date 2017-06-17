@@ -16,7 +16,7 @@ let LeadsFinder = (function() {
             },
             _export_file_prefix: {
                 id: "input-file-prefix",
-                value: "<location>_<state>"
+                value: "<service> <location>_<state>"
             }
         },
         _googleTabId = JSON.parse(localStorage._googleTabId || "null"),
@@ -99,10 +99,11 @@ let LeadsFinder = (function() {
         });
     }
 
-    const templateToFileName = () => {
+    const templateToFileName = (original) => {
         let template = JSON.parse(localStorage._export_file_prefix || "null") || _defaultSettings._export_file_prefix.value;
         let status = JSON.parse(localStorage._status || "{}");
         let replacePattern = {
+            "<service>": status.keyword || "No service",
             "<location>": status.location || "United States of America",
             "<state>": status.state
         }
@@ -133,7 +134,7 @@ let LeadsFinder = (function() {
         let toLine = arr => arr.map(x => `"${(x + "").replace(/"/g, '""')}"`).join(",");
         let content = [toLine(["Name", "Email Address"])];
         let status = JSON.parse(localStorage._status || "{}")
-        let prefix = JSON.parse(localStorage._prefix || "null") || (status.location + "_" + (status.state || ""));
+        let prefix = JSON.parse(localStorage._prefix || "null") || (status.keyword + " " + status.location + "_" + (status.state || ""));
         prefix = templateToFileName(prefix);
         let exportedCount = parseInt(JSON.parse(localStorage._exportedCount || "0")) + 1;
         localStorage._exportedCount = JSON.stringify(exportedCount);
