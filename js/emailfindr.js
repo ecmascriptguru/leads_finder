@@ -13,8 +13,7 @@ let EmailFindr = (function() {
 		let $records = $("table#box tbody tr"),
 			leads = [];
 
-		if (_blankTableCounter > 5) {
-			alert("Found the issue");
+		if (_blankTableCounter > 7 && $records.length == 0) {
 			chrome.runtime.sendMessage({
 				from: "emailfindr",
 				action: "refresh_me"
