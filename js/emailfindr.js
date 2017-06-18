@@ -3,6 +3,7 @@
 let EmailFindr = (function() {
 	let _city = null,
 		_leads = [],
+		_blankTableCounter = 0,
 		_inputSearch = $("#search"),
 		_btnStart = $("#submit"),
 		_selectCount = $("#cd-dropdown"),
@@ -12,7 +13,16 @@ let EmailFindr = (function() {
 		let $records = $("table#box tbody tr"),
 			leads = [];
 
-		if ($records.length == 0) {
+		if (_blankTableCounter > 5) {
+			alert("Found the issue");
+			chrome.runtime.sendMessage({
+				from: "emailfindr",
+				action: "refresh_me"
+			}, () => {
+				console.log("hey");
+			})
+		} else if ($records.length == 0) {
+			_blankTableCounter++;
 			return false;
 		}
 		for (let i = 1; i < $records.length; i ++) {

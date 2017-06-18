@@ -60,6 +60,8 @@ let Background = (function() {
 							} else {
 								LeadsFinder.stop();
 							}
+						} else if (request.action == "refresh_me") {
+							chrome.tabs.reload(sender.tab.id, {bypassCache: true});
 						}
 						break;
 
