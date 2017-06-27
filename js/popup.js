@@ -41,9 +41,9 @@ let Popup = (function() {
 				let params = JSON.parse(localStorage._params);
 
 				if (params.length > 0) {
-					let param = params.pop();
-					localStorage._params = JSON.stringify(params);
-					LeadsFinder.start(param.keyword, param.location, param.state, mode);
+					let todo = params.splice(1);
+					localStorage._params = JSON.stringify(todo);
+					LeadsFinder.start(params[0].keyword, params[0].location, params[0].state, mode);
 				} else {
 					alert("There is nothing to do batch research.");
 				}

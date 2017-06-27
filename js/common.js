@@ -214,9 +214,9 @@ let LeadsFinder = (function() {
                 localStorage._started = JSON.stringify(false);
                 alert("Batch process completed.");
             } else {
-                let param = params.pop();
-                localStorage._params = JSON.stringify(params);
-                start(param.keyword, param.location, param.state, JSON.parse(localStorage._mode));
+                let todo = params.splice(1);
+                localStorage._params = JSON.stringify(todo);
+                start(params[0].keyword, params[0].location, params[0].state, JSON.parse(localStorage._mode));
             }
         } else {
             localStorage._started = JSON.stringify(false);
