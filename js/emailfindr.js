@@ -78,6 +78,8 @@ let EmailFindr = (function() {
 			if (!_totalTimer) {
 				_totalTimer = setTimeout(() => {
 					if (_refreshCount > 2) {
+						_refreshCount = 0;
+						localStorage._refreshCount = JSON.stringify(_refreshCount);
 						feedLeads([]);
 					} else {
 						chrome.runtime.sendMessage({
