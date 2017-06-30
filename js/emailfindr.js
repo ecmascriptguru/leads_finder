@@ -11,6 +11,7 @@ let EmailFindr = (function() {
 		_totalTimer = null,
 		_waitTimer = null;
 
+
 	let waitForLeads = () => {
 		let $records = $("table#box tbody tr"),
 			leads = [];
@@ -38,17 +39,6 @@ let EmailFindr = (function() {
 
 			window.clearInterval(_waitTimer);
 			feedLeads(leads);
-			// chrome.runtime.sendMessage({
-			// 	from: "emailfindr",
-			// 	action: "leads",
-			// 	leads: leads
-			// }, function(response) {
-			// 	if (response.continue && response.city && response.count) {
-			// 		clearTimeout(_totalTimer);
-			// 		_totalTimer = null;
-			// 		init(response.keyword, response.city, response.count);
-			// 	}
-			// })
 		}
 	};
 
@@ -73,6 +63,8 @@ let EmailFindr = (function() {
 		_btnStart = $("#submit");
 		_selectCount = $("#cd-dropdown");
 
+		let period = JSON.parse(localStorage._max_lead_count || "500");
+
 		if (_btnStart.length > 0) {
 			clearInterval(_waitTimer);
 			if (!_totalTimer) {
@@ -89,7 +81,7 @@ let EmailFindr = (function() {
 						_refreshCount++;
 						localStorage._refreshCount = JSON.stringify(_refreshCount);
 					}
-				}, 30 * 1000);
+				}, (period / 10) * 1000);
 			}
 
 			_inputSearch.val(keyword + " in " + _city);
