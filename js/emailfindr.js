@@ -7,51 +7,64 @@ let EmailFindr = (function() {
 		_inputSearch = $("#search"),
 		_btnStart = $("#submit"),
 		_selectCount = $("#cd-dropdown"),
+		_refreshCount = JSON.parse(localStorage._refreshCount || "0"),
+		_totalTimer = null,
 		_waitTimer = null;
 
 	let waitForLeads = () => {
 		let $records = $("table#box tbody tr"),
 			leads = [];
 
-		if (_blankTableCounter > 7 && $records.length == 0) {
-			chrome.runtime.sendMessage({
-				from: "emailfindr",
-				action: "refresh_me"
-			}, () => {
-				console.log("hey");
-			})
-		} else if ($records.length == 0) {
+		if ($records.length == 0) {
 			_blankTableCounter++;
 			return false;
-		}
-		for (let i = 1; i < $records.length; i ++) {
-			let $curRecord = $records.eq(i),
-				lead = {};
-			
-			if (i == $records.length - 1) {
-				break;
-			} else if ($curRecord.find("td:nth-child(3)").text().indexOf("...") === 0) {
-				return false;
-			} else if ($curRecord.find("td:nth-child(6)").text() == "") {
-				continue;
+		} else {
+			for (let i = 1; i < $records.length; i ++) {
+				let $curRecord = $records.eq(i),
+					lead = {};
+				
+				if (i == $records.length - 1) {
+					break;
+				} else if ($curRecord.find("td:nth-child(3)").text().indexOf("...") === 0) {
+					return false;
+				} else if ($curRecord.find("td:nth-child(6)").text() == "") {
+					continue;
+				}
+
+				lead.name = $curRecord.find("td:nth-child(3)").text();
+				lead.email = $curRecord.find("td:nth-child(6)").text();
+				leads.push(lead);
 			}
 
-			lead.name = $curRecord.find("td:nth-child(3)").text();
-			lead.email = $curRecord.find("td:nth-child(6)").text();
-			leads.push(lead);
+			window.clearInterval(_waitTimer);
+			feedLeads(leads);
+			// chrome.runtime.sendMessage({
+			// 	from: "emailfindr",
+			// 	action: "leads",
+			// 	leads: leads
+			// }, function(response) {
+			// 	if (response.continue && response.city && response.count) {
+			// 		clearTimeout(_totalTimer);
+			// 		_totalTimer = null;
+			// 		init(response.keyword, response.city, response.count);
+			// 	}
+			// })
 		}
+	};
 
-		window.clearInterval(_waitTimer);
+	let feedLeads = (leads) => {
 		chrome.runtime.sendMessage({
 			from: "emailfindr",
 			action: "leads",
 			leads: leads
 		}, function(response) {
 			if (response.continue && response.city && response.count) {
+				clearTimeout(_totalTimer);
+				_totalTimer = null;
 				init(response.keyword, response.city, response.count);
 			}
 		})
-	};
+	}
 
 	let init = (keyword, city, count) => {
 		_city = city;
@@ -62,7 +75,21 @@ let EmailFindr = (function() {
 
 		if (_btnStart.length > 0) {
 			clearInterval(_waitTimer);
-			
+			if (!_totalTimer) {
+				_totalTimer = setTimeout(() => {
+					if (_refreshCount > 2) {
+						feedLeads([]);
+					} else {
+						chrome.runtime.sendMessage({
+							from: "emailfindr",
+							action: "refresh_me"
+						});
+						_refreshCount++;
+						localStorage._refreshCount = JSON.stringify(_refreshCount);
+					}
+				}, 30 * 1000);
+			}
+
 			_inputSearch.val(keyword + " in " + _city);
 			_selectCount.val(count || 500);
 			_btnStart.click();

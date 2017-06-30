@@ -32,12 +32,6 @@ let LeadsFinder = (function() {
             keyword
         });
         init();
-        // chrome.extension.sendMessage({
-        //     from: "popup",
-        //     action: "start",
-        //     location: location,
-        //     state: state
-        // });
         checkGoogle(location, state);
     };
 
